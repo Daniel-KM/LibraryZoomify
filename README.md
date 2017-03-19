@@ -1,6 +1,8 @@
 Zoomify (php library)
 =====================
 
+[![Package version](https://img.shields.io/packagist/v/daniel-km/zoomify.svg)](https://packagist.org/packages/daniel-km/zoomify)
+
 [Zoomify] is a stand-alone library to generate tiles of big images in order to
 zoom them instantly. The tiles are created with the Zoomify format and they can
 be used with [OpenSeadragon], [OpenLayers] and various viewers.
