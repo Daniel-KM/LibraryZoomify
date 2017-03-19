@@ -43,7 +43,6 @@ namespace DanielKm\Zoomify;
  */
 class Zoomify
 {
-
     /**
      * Store the config.
      *
@@ -82,7 +81,7 @@ class Zoomify
     /**
      * The file system mode of the directories.
      *
-     * @var integer
+     * @var int
      */
     protected $dirMode = 0755;
 
@@ -96,7 +95,7 @@ class Zoomify
     /**
      * The overlap of tiles.
      *
-     * @var integer
+     * @var int
      */
     protected $tileOverlap = 0;
 
@@ -110,7 +109,7 @@ class Zoomify
     /**
      * The quality of the tile.
      *
-     * @var integer
+     * @var int
      */
     protected $tileQuality = 85;
 
@@ -137,7 +136,7 @@ class Zoomify
      * @param array $config
      * @throws \Exception
      */
-    function __construct(array $config = null)
+    public function __construct(array $config = null)
     {
         if (is_null($config)) {
             $config = array();
@@ -164,20 +163,20 @@ class Zoomify
                 if (!empty($convertPath)) {
                     $this->processor = 'ImageMagick';
                 } else {
-                    throw new \Exception ('Convert path is not available.');
+                    throw new \Exception('Convert path is not available.');
                 }
             }
         }
         // Imagick.
         elseif ($this->processor == 'Imagick') {
             if (!extension_loaded('imagick')) {
-                throw new \Exception ('Imagick library is not available.');
+                throw new \Exception('Imagick library is not available.');
             }
         }
         // GD.
         elseif ($this->processor == 'GD') {
             if (!extension_loaded('gd')) {
-                throw new \Exception ('GD library is not available.');
+                throw new \Exception('GD library is not available.');
             }
         }
         // CLI.
@@ -189,13 +188,13 @@ class Zoomify
                 if (!empty($convertPath)) {
                     $this->processor = 'ImageMagick';
                 } else {
-                    throw new \Exception ('Convert path is not available.');
+                    throw new \Exception('Convert path is not available.');
                 }
             }
         }
         // Error.
         else {
-            throw new \Exception ('No graphic library available.');
+            throw new \Exception('No graphic library available.');
         }
     }
 
@@ -206,7 +205,7 @@ class Zoomify
      *
      * @param string $filepath The path to the image.
      * @param string $destinationDir The directory where to store the tiles.
-     * @return boolean
+     * @return bool
      */
     public function process($filepath, $destinationDir = '')
     {
@@ -224,12 +223,11 @@ class Zoomify
                 $processor = new ZoomifyImageMagick($this->config);
                 break;
             default:
-                throw new \Exception ('No graphic library available.');
+                throw new \Exception('No graphic library available.');
         }
         $result = $processor->process($filepath, $destinationDir);
         return $result;
     }
-
 
     /**
      * Zoomify the specified image and store it in the destination dir.
@@ -238,7 +236,6 @@ class Zoomify
      *
      * @param string $filepath The path to the image.
      * @param string $destinationDir The directory where to store the tiles.
-     * @return void
      */
     protected function zoomifyImage($filepath, $destinationDir)
     {
@@ -258,8 +255,6 @@ class Zoomify
 
     /**
      * Given an image name, load it and extract metadata.
-     *
-     * @return void
      */
     protected function getImageMetadata()
     {
@@ -284,7 +279,7 @@ class Zoomify
     /**
      * Create a container (a folder) for tiles and tile metadata if not set.
      *
-     * @return boolean
+     * @return bool
      */
     protected function createDataContainer()
     {
@@ -356,8 +351,7 @@ class Zoomify
 
                 if ($numberOfTiles == 0) {
                     $this->createTileContainer($tileContainerName);
-                }
-                elseif ($numberOfTiles % $this->tileSize == 0) {
+                } elseif ($numberOfTiles % $this->tileSize == 0) {
                     ++$tileGroupNumber;
                     $tileContainerName = $this->getNewTileContainerName($tileGroupNumber);
                     $this->createTileContainer($tileContainerName);
@@ -375,8 +369,7 @@ class Zoomify
                     $ul_y = $lr_y;
                     $column = 0;
                     ++$row;
-                }
-                else {
+                } else {
                     $ul_x = $lr_x;
                     ++$column;
                 }
@@ -455,7 +448,7 @@ class Zoomify
     /**
      * Save xml metadata about the tiles.
      *
-     * @return boolean
+     * @return bool
      */
     protected function saveXMLOutput()
     {
@@ -484,7 +477,7 @@ class Zoomify
      * Remove a dir from filesystem.
      *
      * @param string $dirpath
-     * @return boolean
+     * @return bool
      */
     protected function rmDir($dirPath)
     {
@@ -493,8 +486,7 @@ class Zoomify
             $path = $dirPath . DIRECTORY_SEPARATOR . $file;
             if (is_dir($path)) {
                 $this->rmDir($path);
-            }
-            else {
+            } else {
                 unlink($path);
             }
         }

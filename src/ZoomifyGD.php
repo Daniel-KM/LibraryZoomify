@@ -32,16 +32,14 @@ if (!class_exists('DanielKm\Zoomify\Zoomify')) {
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
 class ZoomifyGD extends Zoomify
 {
-
     /**
      * Constructor.
      *
      * @param array $config
      */
-    function __construct(array $config = null)
+    public function __construct(array $config = null)
     {
         if (is_null($config)) {
             $config = array();
@@ -62,7 +60,7 @@ class ZoomifyGD extends Zoomify
      *
      * @param string $filepath The path to the image.
      * @param string $destinationDir The directory where to store the tiles.
-     * @return boolean
+     * @return bool
      */
     public function process($filepath, $destinationDir = '')
     {
@@ -152,7 +150,7 @@ class ZoomifyGD extends Zoomify
             }
 
             ++$r;
-            $secondRowFile =  $root . '-' . $t . '-' . $r . '.' . $ext;
+            $secondRowFile = $root . '-' . $t . '-' . $r . '.' . $ext;
             $secondRowWidth = 0;
             $secondRowHeight = 0;
 
@@ -215,8 +213,7 @@ class ZoomifyGD extends Zoomify
                     $ul_y = $lr_y;
                     $column = 0;
                     #row += 1
-                }
-                else {
+                } else {
                     $ul_x = $lr_x;
                     ++$column;
                 }
@@ -245,8 +242,7 @@ class ZoomifyGD extends Zoomify
             if ($tier > 0) {
                 if ($row % 2 != 0) {
                     $this->processRowImage($tier - 1, floor(($row - 1) / 2));
-                }
-                elseif ($row == $rowsForTier - 1) {
+                } elseif ($row == $rowsForTier - 1) {
                     $this->processRowImage($tier - 1, floor($row / 2));
                 }
             }
@@ -289,7 +285,6 @@ class ZoomifyGD extends Zoomify
      *
      * @param resource $image
      * @param string $filepath
-     * @return void
      */
     protected function saveImageToFile($image, $filepath)
     {

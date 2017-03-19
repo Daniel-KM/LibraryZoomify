@@ -38,10 +38,8 @@ if (!class_exists('DanielKm\Zoomify\Zoomify')) {
  * same than the original, so it can be improved.
  * @todo Use functions allowing to create multiple tiles in one time.
  */
-
 class ZoomifyImageMagick extends Zoomify
 {
-
     /**
      * The path to command line ImageMagick convert when the processor is "cli".
      *
@@ -61,7 +59,7 @@ class ZoomifyImageMagick extends Zoomify
      *
      * @param array $config
      */
-    function __construct(array $config = null)
+    public function __construct(array $config = null)
     {
         if (is_null($config)) {
             $config = array();
@@ -82,7 +80,7 @@ class ZoomifyImageMagick extends Zoomify
      *
      * @param string $filepath The path to the image.
      * @param string $destinationDir The directory where to store the tiles.
-     * @return boolean
+     * @return bool
      */
     public function process($filepath, $destinationDir = '')
     {
@@ -259,8 +257,7 @@ class ZoomifyImageMagick extends Zoomify
                     $ul_y = $lr_y;
                     $column = 0;
                     #row += 1
-                }
-                else {
+                } else {
                     $ul_x = $lr_x;
                     ++$column;
                 }
@@ -295,8 +292,7 @@ class ZoomifyImageMagick extends Zoomify
             if ($tier > 0) {
                 if ($row % 2 != 0) {
                     $this->processRowImage($tier - 1, floor(($row - 1) / 2));
-                }
-                elseif ($row == $rowsForTier - 1) {
+                } elseif ($row == $rowsForTier - 1) {
                     $this->processRowImage($tier - 1, floor($row / 2));
                 }
             }
@@ -312,7 +308,7 @@ class ZoomifyImageMagick extends Zoomify
      * @param string $destination
      * @param array $resize Array with width and height.
      * @param array $crop Array with width, height, upper left x and y.
-     * @return boolean
+     * @return bool
      */
     protected function imageResizeCrop($source, $destination, $resize = array(), $crop = array())
     {
@@ -338,7 +334,7 @@ class ZoomifyImageMagick extends Zoomify
      * @param string $source
      * @param string $destination
      * @param array $params
-     * @return boolean
+     * @return bool
      */
     protected function convert($source, $destination, $params)
     {
