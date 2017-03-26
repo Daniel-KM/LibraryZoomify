@@ -146,7 +146,7 @@ class ZoomifyGD extends Zoomify
                 // Bug: Use $firstRowHeight instead of $imageRowHalfHeight.
                 // See Drupal Zoomify module http://drupalcode.org/project/zoomify.git/blob_plain/e2f977ab4b153b4ce6d1a486a1fe80ecf9512559:/ZoomifyFileProcessor.php.
                 imagecopyresampled($imageRow, $firstRowImage, 0, 0, 0, 0, $tierWidth, $firstRowHeight, $firstRowWidth, $firstRowHeight);
-//                 unlink($firstRowFile);
+                unlink($firstRowFile);
             }
 
             ++$r;
@@ -169,7 +169,7 @@ class ZoomifyGD extends Zoomify
                 // copied in the bottom of imageRow, then the second row file is
                 // deleted.
                 imagecopyresampled($imageRow, $secondRowImage, 0, $imageRowHalfHeight, 0, 0, $tierWidth, $secondRowHeight, $secondRowWidth, $secondRowHeight);
-//                 unlink($secondRowFile);
+                unlink($secondRowFile);
             }
 
             // The last row may be less than $this->tileSize...

@@ -163,7 +163,7 @@ class ZoomifyImagick extends Zoomify
                $firstRowImage->resizeImage($tierWidth, $firstRowHeight, Imagick::FILTER_LANCZOS, 1, false);
                $imageRow->compositeImage($firstRowImage, \Imagick::COMPOSITE_OVER, 0, 0);
                $firstRowImage->destroy();
-               // unlink($firstRowFile);
+               unlink($firstRowFile);
            }
 
            ++$r;
@@ -185,7 +185,7 @@ class ZoomifyImagick extends Zoomify
                $secondRowImage->resizeImage($tierWidth, $secondRowHeight, Imagick::FILTER_LANCZOS, 1, false);
                $imageRow->compositeImage($secondRowImage, \Imagick::COMPOSITE_OVER, 0, $imageRowHalfHeight);
                $secondRowImage->destroy();
-               // unlink($secondRowFile);
+               unlink($secondRowFile);
            }
 
            // The last row may be less than $this->tileSize...
