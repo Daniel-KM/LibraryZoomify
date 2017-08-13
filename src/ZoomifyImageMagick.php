@@ -370,7 +370,7 @@ class ZoomifyImageMagick extends Zoomify
      *
      * Expects arguments to be properly escaped.
      *
-     * @see Omeka\Service\Cli
+     * @see Omeka\Stdlib\Cli
      *
      * @param string $command An executable command
      * @return string|false The command's standard output or false on error
