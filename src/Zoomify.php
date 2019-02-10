@@ -13,7 +13,7 @@ namespace DanielKm\Zoomify;
  * Copyright 2005 Adam Smith (asmith@agile-software.com)
  * Copyright Wes Wright (http://greengaloshes.cc)
  * Copyright Justin Henry (http://greengaloshes.cc)
- * Copyright 2014-2017 Daniel Berthereau (Daniel.github@Berthereau.net)
+ * Copyright 2014-2019 Daniel Berthereau (Daniel.github@Berthereau.net)
  *
  * Ported from Python to PHP by Wes Wright
  * Cleanup for Drupal by Karim Ratib (kratib@open-craft.com)
@@ -74,7 +74,7 @@ class Zoomify
     /**
      * If an existing destination should be removed.
      *
-     * @var interger
+     * @var int
      */
     protected $destinationRemove = false;
 
@@ -88,7 +88,7 @@ class Zoomify
     /**
      * The size of tiles.
      *
-     * @var interger
+     * @var int
      */
     protected $tileSize = 256;
 
@@ -288,7 +288,7 @@ class Zoomify
         }
         //Determine the path to the directory from the filepath.
         else {
-            list($root, $ext) = $this->getRootAndDotExtension($this->_imageFilename);
+            list($root) = $this->getRootAndDotExtension($this->_imageFilename);
             $directory = dirname($root);
             $filename = basename($root);
             $root = $filename . '_zdata';
@@ -302,7 +302,7 @@ class Zoomify
         // for it.
         if ($this->destinationRemove) {
             if (is_dir($this->_saveToLocation)) {
-                $result = $this->rmDir($this->_saveToLocation);
+                $this->rmDir($this->_saveToLocation);
             }
         } elseif (is_dir($this->_saveToLocation)) {
             return false;

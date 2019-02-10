@@ -10,7 +10,7 @@ if (!class_exists('DanielKm\Zoomify\Zoomify')) {
  * Copyright 2005 Adam Smith (asmith@agile-software.com)
  * Copyright Wes Wright (http://greengaloshes.cc)
  * Copyright Justin Henry (http://greengaloshes.cc)
- * Copyright 2014-2017 Daniel Berthereau (Daniel.github@Berthereau.net)
+ * Copyright 2014-2019 Daniel Berthereau (Daniel.github@Berthereau.net)
  *
  * Ported from Python to PHP by Wes Wright
  * Cleanup for Drupal by Karim Ratib (kratib@open-craft.com)
@@ -154,7 +154,7 @@ class ZoomifyGD extends Zoomify
             $secondRowWidth = 0;
             $secondRowHeight = 0;
 
-            // There may not be a second row at the bottom of the image...
+            // There may not be a second row at the bottom of the image…
             // If any, copy this second row file at the bottom of the row image.
             if (is_file($secondRowFile)) {
                 // As imageRow isn't empty, the second row file is resized, then
@@ -172,8 +172,7 @@ class ZoomifyGD extends Zoomify
                 unlink($secondRowFile);
             }
 
-            // The last row may be less than $this->tileSize...
-            $rowHeight = $firstRowHeight + $secondRowHeight;
+            // The last row may be less than $this->tileSize…
             $tileHeight = $this->tileSize * 2;
             $tierHeightCheck = $firstRowHeight + $secondRowHeight;
             if ($tierHeightCheck < $tileHeight) {
@@ -252,7 +251,7 @@ class ZoomifyGD extends Zoomify
     /**
      * Load the image data.
      *
-     * @return ressource identifier of the image.
+     * @return resource Identifier of the image.
      */
     protected function openImage()
     {
@@ -263,7 +262,7 @@ class ZoomifyGD extends Zoomify
      * Helper to get an image of different type (jpg, png or gif) from file.
      *
      * @param string $filepath
-     * @return ressource identifier of the image.
+     * @return resource Identifier of the image.
      */
     protected function getImageFromFile($filepath)
     {
@@ -310,7 +309,7 @@ class ZoomifyGD extends Zoomify
     /**
      * Crop an image to a size.
      *
-     * @return ressource identifier of the image.
+     * @return resource Identifier of the image.
      */
     protected function imageCrop($image, $left, $upper, $right, $lower)
     {

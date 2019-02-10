@@ -10,7 +10,7 @@ if (!class_exists('DanielKm\Zoomify\Zoomify')) {
  * Copyright 2005 Adam Smith (asmith@agile-software.com)
  * Copyright Wes Wright (http://greengaloshes.cc)
  * Copyright Justin Henry (http://greengaloshes.cc)
- * Copyright 2014-2017 Daniel Berthereau (Daniel.github@Berthereau.net)
+ * Copyright 2014-2019 Daniel Berthereau (Daniel.github@Berthereau.net)
  *
  * Ported from Python to PHP by Wes Wright
  * Cleanup for Drupal by Karim Ratib (kratib@open-craft.com)
@@ -114,7 +114,7 @@ class ZoomifyImageMagick extends Zoomify
             $crop['height'] = $height;
             $crop['x'] = 0;
             $crop['y'] = $ul_y;
-            $result = $this->imageResizeCrop($this->_imageFilename, $saveFilename, array(), $crop);
+            $this->imageResizeCrop($this->_imageFilename, $saveFilename, array(), $crop);
 
             $this->processRowImage($tier, $row);
             ++$row;
@@ -168,7 +168,7 @@ class ZoomifyImageMagick extends Zoomify
             $r = $row * 2;
 
             $firstRowFile = $root . '-' . $t . '-' . $r . '.' . $ext;
-            $firstRowWidth = 0;
+            // $firstRowWidth = 0;
             $firstRowHeight = 0;
 
             $isThereFirstRowFile = is_file($firstRowFile);
@@ -176,7 +176,7 @@ class ZoomifyImageMagick extends Zoomify
             if ($isThereFirstRowFile) {
                 // Take all the existing first row image and resize it to tier
                 // width and image row half height.
-                list($firstRowWidth, $firstRowHeight) = getimagesize($firstRowFile);
+                list(/* $firstRowWidth */, $firstRowHeight) = getimagesize($firstRowFile);
                 $imageRow .= ' \( '
                     . $firstRowFile
                     . ' -resize ' . escapeshellarg(sprintf('%dx%d!', $tierWidth, $firstRowHeight))
@@ -185,19 +185,19 @@ class ZoomifyImageMagick extends Zoomify
 
             ++$r;
             $secondRowFile = $root . '-' . $t . '-' . $r . '.' . $ext;
-            $secondRowWidth = 0;
+            // $secondRowWidth = 0;
             $secondRowHeight = 0;
 
             $isThereSecondRowFile = is_file($secondRowFile);
 
-            // There may not be a second row at the bottom of the image...
+            // There may not be a second row at the bottom of the image…
             // If any, copy this second row file at the bottom of the row image.
             if ($isThereSecondRowFile) {
                 // As imageRow isn't empty, the second row file is resized, then
                 // copied in the bottom of imageRow, then the second row file is
                 // deleted.
-                $imageRowHalfHeight = floor($this->tileSize / 2);
-                list($secondRowWidth, $secondRowHeight) = getimagesize($secondRowFile);
+                // $imageRowHalfHeight = floor($this->tileSize / 2);
+                list(/* $secondRowWidth */, $secondRowHeight) = getimagesize($secondRowFile);
                 $imageRow .= ' \( '
                     . $secondRowFile
                     . ' -resize ' . escapeshellarg(sprintf('%dx%d!', $tierWidth, $secondRowHeight))
@@ -205,8 +205,7 @@ class ZoomifyImageMagick extends Zoomify
                     . ' -append';
             }
 
-            // The last row may be less than $this->tileSize...
-            $rowHeight = $firstRowHeight + $secondRowHeight;
+            // The last row may be less than $this->tileSize…
             $tileHeight = $this->tileSize * 2;
             $tierHeightCheck = $firstRowHeight + $secondRowHeight;
             if ($tierHeightCheck < $tileHeight) {
@@ -248,7 +247,7 @@ class ZoomifyImageMagick extends Zoomify
                 $command = $this->convertPath
                     . ' ' . $command
                     . ' ' . escapeshellarg($tileFilename);
-                $result = $this->execute($command);
+                $this->execute($command);
                 $this->_numberOfTiles++;
 
                 // Set upper left cropping point.
@@ -278,7 +277,7 @@ class ZoomifyImageMagick extends Zoomify
                 $command = $this->convertPath
                     . ' ' . $command
                     . ' ' . escapeshellarg($rowFilename);
-                $result = $this->execute($command);
+                $this->execute($command);
             }
 
             if ($isThereFirstRowFile) {
@@ -370,7 +369,7 @@ class ZoomifyImageMagick extends Zoomify
      *
      * Expects arguments to be properly escaped.
      *
-     * @see Omeka\Stdlib\Cli
+     * @see \Omeka\Stdlib\Cli
      *
      * @param string $command An executable command
      * @return string|false The command's standard output or false on error
@@ -399,6 +398,8 @@ class ZoomifyImageMagick extends Zoomify
      */
     protected function exec($command)
     {
+        $output = array();
+        $exitCode = null;
         exec($command, $output, $exitCode);
         if (0 !== $exitCode) {
             return false;
@@ -422,16 +423,17 @@ class ZoomifyImageMagick extends Zoomify
         // directory cannot be set properly via exec().  Note that exec() works
         // fine when executing in the web environment but fails in CLI.
         $descriptorSpec = array(
-            0 => array("pipe", "r"), //STDIN
-            1 => array("pipe", "w"), //STDOUT
-            2 => array("pipe", "w"), //STDERR
+            0 => array('pipe', 'r'), //STDIN
+            1 => array('pipe', 'w'), //STDOUT
+            2 => array('pipe', 'w'), //STDERR
         );
+        $pipes = array();
         $proc = proc_open($command, $descriptorSpec, $pipes, getcwd());
         if (!is_resource($proc)) {
             return false;
         }
         $output = stream_get_contents($pipes[1]);
-        $errors = stream_get_contents($pipes[2]);
+        // $errors = stream_get_contents($pipes[2]);
         foreach ($pipes as $pipe) {
             fclose($pipe);
         }

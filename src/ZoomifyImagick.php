@@ -12,7 +12,7 @@ if (!class_exists('DanielKm\Zoomify\Zoomify')) {
  * Copyright 2005 Adam Smith (asmith@agile-software.com)
  * Copyright Wes Wright (http://greengaloshes.cc)
  * Copyright Justin Henry (http://greengaloshes.cc)
- * Copyright 2014-2017 Daniel Berthereau (Daniel.github@Berthereau.net)
+ * Copyright 2014-2019 Daniel Berthereau (Daniel.github@Berthereau.net)
  *
  * Ported from Python to PHP by Wes Wright
  * Cleanup for Drupal by Karim Ratib (kratib@open-craft.com)
@@ -150,7 +150,7 @@ class ZoomifyImagick extends Zoomify
            $r = $row * 2;
 
            $firstRowFile = $root . '-' . $t . '-' . $r . '.' . $ext;
-           $firstRowWidth = 0;
+           // $firstRowWidth = 0;
            $firstRowHeight = 0;
 
            if (is_file($firstRowFile)) {
@@ -158,7 +158,7 @@ class ZoomifyImagick extends Zoomify
                // width and image row half height.
                $firstRowImage = new Imagick();
                $firstRowImage->readImage($firstRowFile);
-               $firstRowWidth = $firstRowImage->getImageWidth();
+               // $firstRowWidth = $firstRowImage->getImageWidth();
                $firstRowHeight = $firstRowImage->getImageHeight();
                $firstRowImage->resizeImage($tierWidth, $firstRowHeight, Imagick::FILTER_LANCZOS, 1, false);
                $imageRow->compositeImage($firstRowImage, \Imagick::COMPOSITE_OVER, 0, 0);
@@ -168,10 +168,10 @@ class ZoomifyImagick extends Zoomify
 
            ++$r;
            $secondRowFile = $root . '-' . $t . '-' . $r . '.' . $ext;
-           $secondRowWidth = 0;
+           // $secondRowWidth = 0;
            $secondRowHeight = 0;
 
-           // There may not be a second row at the bottom of the image...
+           // There may not be a second row at the bottom of the image…
            // If any, copy this second row file at the bottom of the row image.
            if (is_file($secondRowFile)) {
                // As imageRow isn't empty, the second row file is resized, then
@@ -180,7 +180,7 @@ class ZoomifyImagick extends Zoomify
                $imageRowHalfHeight = floor($this->tileSize / 2);
                $secondRowImage = new Imagick();
                $secondRowImage->readImage($secondRowFile);
-               $secondRowWidth = $secondRowImage->getImageWidth();
+               // $secondRowWidth = $secondRowImage->getImageWidth();
                $secondRowHeight = $secondRowImage->getImageHeight();
                $secondRowImage->resizeImage($tierWidth, $secondRowHeight, Imagick::FILTER_LANCZOS, 1, false);
                $imageRow->compositeImage($secondRowImage, \Imagick::COMPOSITE_OVER, 0, $imageRowHalfHeight);
@@ -188,8 +188,8 @@ class ZoomifyImagick extends Zoomify
                unlink($secondRowFile);
            }
 
-           // The last row may be less than $this->tileSize...
-           $rowHeight = $firstRowHeight + $secondRowHeight;
+           // The last row may be less than $this->tileSize…
+           // $rowHeight = $firstRowHeight + $secondRowHeight;
            $tileHeight = $this->tileSize * 2;
            $tierHeightCheck = $firstRowHeight + $secondRowHeight;
            if ($tierHeightCheck < $tileHeight) {
