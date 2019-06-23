@@ -88,6 +88,16 @@ class ZoomifyImagick extends Zoomify
 
         list($root, $ext) = $this->getRootAndDotExtension($this->_imageFilename);
 
+        // Keep icc profiles, but remove metadata and convert colorspace to
+        // optimize for web delivery.
+        $image = new Imagick();
+        $image->readImage($this->_imageFilename);
+        $profiles = $image->getImageProfiles('icc', true);
+        if (!empty($profiles['icc'])) {
+            $this->data['icc'] = $profiles['icc'];
+        }
+        $image->destroy();
+
         // Create a row from the original image and process it.
         while ($row * $this->tileSize < $this->_originalHeight) {
             $ul_y = $row * $this->tileSize;
@@ -199,6 +209,12 @@ class ZoomifyImagick extends Zoomify
 
         // Create tiles for the current image row.
         if ($imageRow) {
+            $imageRow->transformImageColorspace(Imagick::COLORSPACE_SRGB);
+            $imageRow->stripImage();
+            if (!empty($this->data['icc'])) {
+                $imageRow->profileImage('icc', $this->data['icc']);
+            }
+
             // Cycle through columns, then rows.
             $column = 0;
             $imageWidth = $imageRow->getImageWidth();
