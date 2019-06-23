@@ -62,7 +62,7 @@ class ZoomifyImageMagick extends Zoomify
     public function __construct(array $config = null)
     {
         if (is_null($config)) {
-            $config = array();
+            $config = [];
         }
 
         $this->config = $config;
@@ -109,12 +109,12 @@ class ZoomifyImageMagick extends Zoomify
             $saveFilename = $root . '-' . $tier . '-' . $row . '.' . $ext;
             $width = $this->_originalWidth;
             $height = abs($lr_y - $ul_y);
-            $crop = array();
+            $crop = [];
             $crop['width'] = $width;
             $crop['height'] = $height;
             $crop['x'] = 0;
             $crop['y'] = $ul_y;
-            $this->imageResizeCrop($this->_imageFilename, $saveFilename, array(), $crop);
+            $this->imageResizeCrop($this->_imageFilename, $saveFilename, [], $crop);
 
             $this->processRowImage($tier, $row);
             ++$row;
@@ -135,7 +135,7 @@ class ZoomifyImageMagick extends Zoomify
         list($root, $ext) = $this->getRootAndDotExtension($this->_imageFilename);
 
         $imageRow = null;
-        $imageRowSize = array();
+        $imageRowSize = [];
         $isThereFirstRowFile = false;
         $isThereSecondRowFile = false;
 
@@ -160,7 +160,7 @@ class ZoomifyImageMagick extends Zoomify
             $imageRow = ' -format ' . $this->_tileExt;
             $imageRow .= ' -quality ' . $this->tileQuality;
             $imageRow .= ' -size ' . escapeshellarg(sprintf('%dx%d', $tierWidth, $this->tileSize));
-            $imageRowSize = array();
+            $imageRowSize = [];
             $imageRowSize['width'] = $tierWidth;
             $imageRowSize['height'] = $this->tileSize;
 
@@ -255,7 +255,7 @@ class ZoomifyImageMagick extends Zoomify
                     $ul_x = 0;
                     $ul_y = $lr_y;
                     $column = 0;
-                    #row += 1
+                #row += 1
                 } else {
                     $ul_x = $lr_x;
                     ++$column;
@@ -309,9 +309,9 @@ class ZoomifyImageMagick extends Zoomify
      * @param array $crop Array with width, height, upper left x and y.
      * @return bool
      */
-    protected function imageResizeCrop($source, $destination, $resize = array(), $crop = array())
+    protected function imageResizeCrop($source, $destination, $resize = [], $crop = [])
     {
-        $params = array();
+        $params = [];
         // Clean the canvas.
         $params[] = '+repage';
         $params[] = '-flatten';
@@ -398,7 +398,7 @@ class ZoomifyImageMagick extends Zoomify
      */
     protected function exec($command)
     {
-        $output = array();
+        $output = [];
         $exitCode = null;
         exec($command, $output, $exitCode);
         if (0 !== $exitCode) {
@@ -422,12 +422,12 @@ class ZoomifyImageMagick extends Zoomify
         // fails with a "Permission Denied" error because the current working
         // directory cannot be set properly via exec().  Note that exec() works
         // fine when executing in the web environment but fails in CLI.
-        $descriptorSpec = array(
-            0 => array('pipe', 'r'), //STDIN
-            1 => array('pipe', 'w'), //STDOUT
-            2 => array('pipe', 'w'), //STDERR
-        );
-        $pipes = array();
+        $descriptorSpec = [
+            0 => ['pipe', 'r'], //STDIN
+            1 => ['pipe', 'w'], //STDOUT
+            2 => ['pipe', 'w'], //STDERR
+        ];
+        $pipes = [];
         $proc = proc_open($command, $descriptorSpec, $pipes, getcwd());
         if (!is_resource($proc)) {
             return false;

@@ -118,7 +118,7 @@ class Zoomify
      *
      * @array
      */
-    protected $data = array();
+    protected $data = [];
 
     protected $_tileExt = 'jpg';
     protected $_imageFilename = '';
@@ -126,8 +126,8 @@ class Zoomify
     protected $_originalHeight = 0;
     protected $_originalFormat = 0;
     protected $_saveToLocation;
-    protected $_scaleInfo = array();
-    protected $_tileGroupMappings = array();
+    protected $_scaleInfo = [];
+    protected $_tileGroupMappings = [];
     protected $_numberOfTiles = 0;
 
     /**
@@ -139,7 +139,7 @@ class Zoomify
     public function __construct(array $config = null)
     {
         if (is_null($config)) {
-            $config = array();
+            $config = [];
         }
 
         $this->config = $config;
@@ -263,12 +263,12 @@ class Zoomify
         // Get scaling information.
         $width = $this->_originalWidth;
         $height = $this->_originalHeight;
-        $width_height = array($width, $height);
+        $width_height = [$width, $height];
         array_unshift($this->_scaleInfo, $width_height);
         while (($width > $this->tileSize) || ($height > $this->tileSize)) {
             $width = floor($width / 2);
             $height = floor($height / 2);
-            $width_height = array($width, $height);
+            $width_height = [$width, $height];
             array_unshift($this->_scaleInfo, $width_height);
         }
 
@@ -388,7 +388,7 @@ class Zoomify
     {
         $extension = pathinfo($filepath, PATHINFO_EXTENSION);
         $root = $extension ? substr($filepath, 0, strrpos($filepath, '.')) : $filepath;
-        return array($root, $extension);
+        return [$root, $extension];
     }
 
     /**
@@ -481,7 +481,7 @@ class Zoomify
      */
     protected function rmDir($dirPath)
     {
-        $files = array_diff(scandir($dirPath), array('.', '..'));
+        $files = array_diff(scandir($dirPath), ['.', '..']);
         foreach ($files as $file) {
             $path = $dirPath . DIRECTORY_SEPARATOR . $file;
             if (is_dir($path)) {

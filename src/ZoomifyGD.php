@@ -42,7 +42,7 @@ class ZoomifyGD extends Zoomify
     public function __construct(array $config = null)
     {
         if (is_null($config)) {
-            $config = array();
+            $config = [];
         }
 
         $this->config = $config;
@@ -211,7 +211,7 @@ class ZoomifyGD extends Zoomify
                     $ul_x = 0;
                     $ul_y = $lr_y;
                     $column = 0;
-                    #row += 1
+                #row += 1
                 } else {
                     $ul_x = $lr_x;
                     ++$column;
