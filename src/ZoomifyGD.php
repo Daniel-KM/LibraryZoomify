@@ -85,6 +85,14 @@ class ZoomifyGD extends Zoomify
         if (empty($image)) {
             throw new \Exception('GD cannot manage the image.');
         }
+        switch (strtolower(pathinfo($this->filepath, PATHINFO_EXTENSION))) {
+            case 'jpg':
+            case 'jpe':
+            case 'jpeg':
+                $inputPel = new \lsolesen\pel\PelJpeg($this->filepath);
+                $this->data['icc'] = $inputPel->getIcc();
+                break;
+        }
         while ($row * $this->tileSize < $this->_originalHeight) {
             $ul_y = $row * $this->tileSize;
             $lr_y = ($ul_y + $this->tileSize < $this->_originalHeight)
@@ -319,6 +327,12 @@ class ZoomifyGD extends Zoomify
                 imagesavealpha($image, true);
                 imagepng($image, $filepath, $this->tileQuality);
                 break;
+        }
+
+        if (!empty($this->data['icc'])) {
+            $outputPel = new \lsolesen\pel\PelJpeg($filepath);
+            $outputPel->setIcc($this->data['icc']);
+            $outputPel->saveFile($filepath);
         }
     }
 
