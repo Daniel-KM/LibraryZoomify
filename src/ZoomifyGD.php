@@ -82,6 +82,9 @@ class ZoomifyGD extends Zoomify
 
         // Create a row from the original image and process it.
         $image = $this->openImage();
+        if (empty($image)) {
+            throw new \Exception('GD cannot manage the image.');
+        }
         while ($row * $this->tileSize < $this->_originalHeight) {
             $ul_y = $row * $this->tileSize;
             $lr_y = ($ul_y + $this->tileSize < $this->_originalHeight)
@@ -259,7 +262,7 @@ class ZoomifyGD extends Zoomify
     }
 
     /**
-     * Helper to get an image of different type (jpg, png or gif) from file.
+     * Helper to get an image of different type (jpg, png, gif…) from file.
      *
      * @param string $filepath
      * @return resource Identifier of the image.
@@ -267,15 +270,28 @@ class ZoomifyGD extends Zoomify
     protected function getImageFromFile($filepath)
     {
         switch (strtolower(pathinfo($filepath, PATHINFO_EXTENSION))) {
-            case 'png':
-                return imagecreatefrompng($filepath);
+            case 'bmp':
+                return imagecreatefrombmp($filepath);
+            case 'gd':
+                return imagecreatefromgd($filepath);
+            case 'gd2':
+                return imagecreatefromgd2($filepath);
             case 'gif':
                 return imagecreatefromgif($filepath);
             case 'jpg':
             case 'jpe':
             case 'jpeg':
-            default:
                 return imagecreatefromjpeg($filepath);
+            case 'png':
+                return imagecreatefrompng($filepath);
+            case 'wbmp':
+                return imagecreatefromwbmp($filepath);
+            case 'webp':
+                return imagecreatefromwebp($filepath);
+            case 'xbm':
+                return imagecreatefromxbm($filepath);
+            case 'xpm':
+                return imagecreatefromxpm($filepath);
         }
     }
 
@@ -289,11 +305,6 @@ class ZoomifyGD extends Zoomify
     {
         touch($filepath);
         switch (strtolower(pathinfo($filepath, PATHINFO_EXTENSION))) {
-            case 'png':
-                imagealphablending($image, false);
-                imagesavealpha($image, true);
-                imagepng($image, $filepath, $this->tileQuality);
-                break;
             case 'gif':
                 imagegif($image, $filepath, $this->tileQuality);
                 break;
@@ -302,6 +313,11 @@ class ZoomifyGD extends Zoomify
             case 'jpeg':
             default:
                 imagejpeg($image, $filepath, $this->tileQuality);
+                break;
+            case 'png':
+                imagealphablending($image, false);
+                imagesavealpha($image, true);
+                imagepng($image, $filepath, $this->tileQuality);
                 break;
         }
     }
