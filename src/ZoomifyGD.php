@@ -78,8 +78,6 @@ class ZoomifyGD extends Zoomify
         $ul_y = 0;
         $lr_y = 0;
 
-        list($root, $ext) = $this->getRootAndDotExtension($this->_imageFilename);
-
         // Create a row from the original image and process it.
         $image = $this->openImage();
         if (empty($image)) {
@@ -98,7 +96,7 @@ class ZoomifyGD extends Zoomify
             $lr_y = ($ul_y + $this->tileSize < $this->_originalHeight)
                 ? $ul_y + $this->tileSize
                 : $this->_originalHeight;
-            $saveFilename = $root . '-' . $tier . '-' . $row . '.' . $ext;
+            $saveFilename = $this->_saveToLocation . DIRECTORY_SEPARATOR . $tier . '-' . $row . '.jpg';
             $imageRow = $this->imageCrop($image, 0, $ul_y, $this->_originalWidth, $lr_y);
             touch($saveFilename);
             imagejpeg($imageRow, $saveFilename, 100);
@@ -120,14 +118,12 @@ class ZoomifyGD extends Zoomify
             ++$rowsForTier;
         }
 
-        list($root, $ext) = $this->getRootAndDotExtension($this->_imageFilename);
-
         $imageRow = null;
 
         // Create row for the current tier.
         // First tier.
         if ($tier == count($this->_scaleInfo) - 1) {
-            $firstTierRowFile = $root . '-' . $tier . '-' . $row . '.' . $ext;
+            $firstTierRowFile = $this->_saveToLocation . DIRECTORY_SEPARATOR . $tier . '-' . $row . '.jpg';
             if (is_file($firstTierRowFile)) {
                 $imageRow = imagecreatefromjpeg($firstTierRowFile);
             }
@@ -143,7 +139,7 @@ class ZoomifyGD extends Zoomify
             $t = $tier + 1;
             $r = $row * 2;
 
-            $firstRowFile = $root . '-' . $t . '-' . $r . '.' . $ext;
+            $firstRowFile = $this->_saveToLocation . DIRECTORY_SEPARATOR . $t . '-' . $r . '.jpg';
             $firstRowWidth = 0;
             $firstRowHeight = 0;
 
@@ -161,7 +157,7 @@ class ZoomifyGD extends Zoomify
             }
 
             ++$r;
-            $secondRowFile = $root . '-' . $t . '-' . $r . '.' . $ext;
+            $secondRowFile = $this->_saveToLocation . DIRECTORY_SEPARATOR . $t . '-' . $r . '.jpg';
             $secondRowWidth = 0;
             $secondRowHeight = 0;
 
@@ -236,7 +232,7 @@ class ZoomifyGD extends Zoomify
                 $halfHeight = max(1, floor($imageHeight / 2));
                 // Warning: the name is the current tier, so the file for the
                 //previous tier, if it exists, is removed.
-                $rowFilename = $root . '-' . $tier . '-' . $row . '.' . $ext;
+                $rowFilename = $this->_saveToLocation . DIRECTORY_SEPARATOR . $tier . '-' . $row . '.jpg';
 
                 $tempImage = imagecreatetruecolor($halfWidth, $halfHeight);
                 imagecopyresampled($tempImage, $imageRow, 0, 0, 0, 0, $halfWidth, $halfHeight, $imageWidth, $imageHeight);
