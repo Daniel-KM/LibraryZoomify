@@ -188,7 +188,7 @@ class ZoomifyGD extends Zoomify
         }
 
         // Create tiles for the current image row.
-        if ($imageRow) {
+        if ($imageRow && $row < $rowsForTier) {
             // Cycle through columns, then rows.
             $column = 0;
             $imageWidth = imagesx($imageRow);
