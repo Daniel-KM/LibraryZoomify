@@ -87,8 +87,12 @@ class ZoomifyGD extends Zoomify
             case 'jpg':
             case 'jpe':
             case 'jpeg':
-                $inputPel = new \lsolesen\pel\PelJpeg($this->filepath);
-                $this->data['icc'] = $inputPel->getIcc();
+                // @link https://github.com/Daniel-KM/LibraryZoomify/issues/1
+                try {
+                    $inputPel = new \lsolesen\pel\PelJpeg($this->filepath);
+                    $this->data['icc'] = $inputPel->getIcc();
+                } catch (\Exception $e) {
+                }
                 break;
         }
         while ($row * $this->tileSize < $this->_originalHeight) {
@@ -326,9 +330,12 @@ class ZoomifyGD extends Zoomify
         }
 
         if (!empty($this->data['icc'])) {
-            $outputPel = new \lsolesen\pel\PelJpeg($filepath);
-            $outputPel->setIcc($this->data['icc']);
-            $outputPel->saveFile($filepath);
+            try {
+                $outputPel = new \lsolesen\pel\PelJpeg($filepath);
+                $outputPel->setIcc($this->data['icc']);
+                $outputPel->saveFile($filepath);
+            } catch (\Exception $e) {
+            }
         }
     }
 
