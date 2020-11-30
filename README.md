@@ -47,6 +47,7 @@ library:
 - PHP Extension [GD] (>=2.0)
 - PHP extension [Imagick] (>=6.5.6)
 - Command line `convert` [ImageMagick] (>=6.0)
+- Command line `vips` [Vips] (>=8.0)
 
 The PHP library `exif` should be installed (generally enabled by default).
 
@@ -116,7 +117,7 @@ Copyright
 * Copyright 2005 Adam Smith (asmith@agile-software.com)
 * Copyright Wes Wright (http://greengaloshes.cc)
 * Copyright Justin Henry (http://greengaloshes.cc)
-* Copyright 2014-2019 Daniel Berthereau (see [Daniel-KM])
+* Copyright 2014-2020 Daniel Berthereau (see [Daniel-KM])
 
 
 [Zoomify]: https://gitlab.com/Daniel-KM/LibraryZoomify
@@ -129,6 +130,7 @@ Copyright
 [GD]: https://secure.php.net/manual/en/book.image.php
 [Imagick]: https://php.net/manual/en/book.imagick.php
 [ImageMagick]: https://www.imagemagick.org/
+[Vips]: https://libvips.github.io/libvips
 [Zoomify viewer]: http://www.zoomify.com/
 [here]: https://ecommons.cornell.edu/bitstream/handle/1813/5410/Introducing_Zoomify_Image.pdf
 [Omeka Classic]: https://omeka.org

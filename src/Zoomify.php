@@ -13,7 +13,7 @@ namespace DanielKm\Zoomify;
  * Copyright 2005 Adam Smith (asmith@agile-software.com)
  * Copyright Wes Wright (http://greengaloshes.cc)
  * Copyright Justin Henry (http://greengaloshes.cc)
- * Copyright 2014-2019 Daniel Berthereau (Daniel.git@Berthereau.net)
+ * Copyright 2014-2020 Daniel Berthereau (Daniel.git@Berthereau.net)
  *
  * Ported from Python to PHP by Wes Wright
  * Cleanup for Drupal by Karim Ratib (kratib@open-craft.com)
@@ -150,27 +150,20 @@ class Zoomify
         // Check the processor.
         // Automatic.
         if (empty($this->processor)) {
-            if (extension_loaded('imagick')) {
+            require_once __DIR__ . DIRECTORY_SEPARATOR . 'ZoomifyVips.php';
+            require_once __DIR__ . DIRECTORY_SEPARATOR . 'ZoomifyImageMagick.php';
+            $processorVips = new ZoomifyVips();
+            $processorImageMagick = new ZoomifyImageMagick();
+            if ($processorVips->getVipsPath()) {
+                $this->processor = 'Vips';
+            } elseif ($processorImageMagick->getConvertPath()) {
+                $this->processor = 'ImageMagick';
+            } elseif (extension_loaded('imagick')) {
                 $this->processor = 'Imagick';
             } elseif (extension_loaded('gd')) {
                 $this->processor = 'GD';
-            } elseif (!empty($this->convertPath)) {
-                $this->processor = 'ImageMagick';
             } else {
-                require_once __DIR__ . DIRECTORY_SEPARATOR . 'ZoomifyImageMagick.php';
-                $processor = new ZoomifyImageMagick();
-                $convertPath = $processor->getConvertPath();
-                if (!empty($convertPath)) {
-                    $this->processor = 'ImageMagick';
-                } else {
-                    throw new \Exception('Convert path is not available.');
-                }
-            }
-        }
-        // Imagick.
-        elseif ($this->processor == 'Imagick') {
-            if (!extension_loaded('imagick')) {
-                throw new \Exception('Imagick library is not available.');
+                throw new \Exception('No graphic library available.');
             }
         }
         // GD.
@@ -179,17 +172,26 @@ class Zoomify
                 throw new \Exception('GD library is not available.');
             }
         }
-        // CLI.
+        // Imagick.
+        elseif ($this->processor == 'Imagick') {
+            if (!extension_loaded('imagick')) {
+                throw new \Exception('Imagick library is not available.');
+            }
+        }
+        // CLI ImageMagick.
         elseif ($this->processor == 'ImageMagick') {
-            if (empty($this->convertPath)) {
-                require_once __DIR__ . DIRECTORY_SEPARATOR . 'ZoomifyImageMagick.php';
-                $processor = new ZoomifyImageMagick();
-                $convertPath = $processor->getConvertPath();
-                if (!empty($convertPath)) {
-                    $this->processor = 'ImageMagick';
-                } else {
-                    throw new \Exception('Convert path is not available.');
-                }
+            require_once __DIR__ . DIRECTORY_SEPARATOR . 'ZoomifyImageMagick.php';
+            $processor = new ZoomifyImageMagick();
+            if (!$processor->getConvertPath()) {
+                throw new \Exception('Convert path is not available.');
+            }
+        }
+        // CLI Vips.
+        elseif ($this->processor == 'Vips') {
+            require_once __DIR__ . DIRECTORY_SEPARATOR . 'ZoomifyVips.php';
+            $processor = new ZoomifyVips();
+            if (!$processor->getVipsPath()) {
+                throw new \Exception('Vips path is not available.');
             }
         }
         // Error.
@@ -222,6 +224,10 @@ class Zoomify
                 require_once __DIR__ . DIRECTORY_SEPARATOR . 'ZoomifyImageMagick.php';
                 $processor = new ZoomifyImageMagick($this->config);
                 break;
+            case 'Vips':
+                require_once __DIR__ . DIRECTORY_SEPARATOR . 'ZoomifyVips.php';
+                $processor = new ZoomifyVips($this->config);
+                break;
             default:
                 throw new \Exception('No graphic library available.');
         }
@@ -243,10 +249,11 @@ class Zoomify
         $this->filepath = realpath($filepath);
         $this->destinationDir = $destinationDir;
         $result = $this->createDataContainer();
-        if (!$result) {
+        if ($result === false) {
             trigger_error('Output directory already exists.', E_USER_WARNING);
-            return;
+            return false;
         }
+
         $this->getImageMetadata();
         $this->processImage();
         $result = $this->saveXMLOutput();

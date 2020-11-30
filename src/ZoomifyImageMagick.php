@@ -10,7 +10,7 @@ if (!class_exists('DanielKm\Zoomify\Zoomify')) {
  * Copyright 2005 Adam Smith (asmith@agile-software.com)
  * Copyright Wes Wright (http://greengaloshes.cc)
  * Copyright Justin Henry (http://greengaloshes.cc)
- * Copyright 2014-2019 Daniel Berthereau (Daniel.git@Berthereau.net)
+ * Copyright 2014-2020 Daniel Berthereau (Daniel.git@Berthereau.net)
  *
  * Ported from Python to PHP by Wes Wright
  * Cleanup for Drupal by Karim Ratib (kratib@open-craft.com)
@@ -40,6 +40,8 @@ if (!class_exists('DanielKm\Zoomify\Zoomify')) {
  */
 class ZoomifyImageMagick extends Zoomify
 {
+    use ZoomifyCommandTrait;
+
     /**
      * The path to command line ImageMagick convert when the processor is "cli".
      *
@@ -351,96 +353,20 @@ class ZoomifyImageMagick extends Zoomify
     /**
      * Helper to get the command line to convert.
      *
-     * @return string|null
+     * @return string
      */
     public function getConvertPath()
     {
-        $command = 'whereis -b convert';
-        $result = $this->execute($command);
-        if (empty($result)) {
-            return;
+        if (is_null($this->convertPath)) {
+            $command = 'whereis -b convert';
+            $result = $this->execute($command);
+            if (empty($result)) {
+                $this->convertPath = '';
+            } else {
+                strtok($result, ' ');
+                $this->convertPath = trim(strtok(' '));
+            }
         }
-        strtok($result, ' ');
-        return strtok(' ');
-    }
-
-    /**
-     * Execute a command.
-     *
-     * Expects arguments to be properly escaped.
-     *
-     * @see \Omeka\Stdlib\Cli
-     *
-     * @param string $command An executable command
-     * @return string|false The command's standard output or false on error
-     */
-    protected function execute($command)
-    {
-        switch ($this->executeStrategy) {
-            case 'proc_open':
-                $output = $this->procOpen($command);
-                break;
-            case 'exec':
-            default:
-                $output = $this->exec($command);
-                break;
-        }
-
-        return $output;
-    }
-
-    /**
-     * Execute command using PHP's exec function.
-     *
-     * @see http://php.net/manual/en/function.exec.php
-     * @param string $command
-     * @return string|false
-     */
-    protected function exec($command)
-    {
-        $output = [];
-        $exitCode = null;
-        exec($command, $output, $exitCode);
-        if (0 !== $exitCode) {
-            return false;
-        }
-        return implode(PHP_EOL, $output);
-    }
-
-    /**
-     * Execute command using PHP's proc_open function.
-     *
-     * For servers that allow proc_open. Logs standard error.
-     *
-     * @see http://php.net/manual/en/function.proc-open.php
-     * @param string $command
-     * @return string|false
-     */
-    protected static function procOpen($command)
-    {
-        // Using proc_open() instead of exec() solves a problem where exec('convert')
-        // fails with a "Permission Denied" error because the current working
-        // directory cannot be set properly via exec().  Note that exec() works
-        // fine when executing in the web environment but fails in CLI.
-        $descriptorSpec = [
-            0 => ['pipe', 'r'], //STDIN
-            1 => ['pipe', 'w'], //STDOUT
-            2 => ['pipe', 'w'], //STDERR
-        ];
-        $pipes = [];
-        $proc = proc_open($command, $descriptorSpec, $pipes, getcwd());
-        if (!is_resource($proc)) {
-            return false;
-        }
-        $output = stream_get_contents($pipes[1]);
-        // $errors = stream_get_contents($pipes[2]);
-        foreach ($pipes as $pipe) {
-            fclose($pipe);
-        }
-        $exitCode = proc_close($proc);
-        if (0 !== $exitCode) {
-            return false;
-        }
-        return trim($output);
+        return $this->convertPath;
     }
 }
