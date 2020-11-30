@@ -88,7 +88,7 @@ your archives regularly so you can roll back if needed.
 Troubleshooting
 ---------------
 
-See the online [issues] page on GitHub.
+See the online [issues] page on GitLab.
 
 
 License
@@ -119,11 +119,11 @@ Copyright
 * Copyright 2014-2019 Daniel Berthereau (see [Daniel-KM])
 
 
-[Zoomify]: https://github.com/Daniel-KM/LibraryZoomify
+[Zoomify]: https://gitlab.com/Daniel-KM/LibraryZoomify
 [OpenSeadragon]: https://openseadragon.github.io/examples/tilesource-zoomify/
 [OpenLayers]: https://openlayers.org/en/latest/examples/zoomify.html
 [International Image Interoperability Framework]: http://iiif.io
-[IIIF Server]: https://github.com/Daniel-KM/Omeka-S-module-IiifServer
+[IIIF Server]: https://gitlab.com/Daniel-KM/Omeka-S-module-IiifServer
 [Omeka S]: https://omeka.org/s
 [package]: https://packagist.org/packages/daniel-km/zoomify
 [GD]: https://secure.php.net/manual/en/book.image.php
@@ -132,10 +132,10 @@ Copyright
 [Zoomify viewer]: http://www.zoomify.com/
 [here]: https://ecommons.cornell.edu/bitstream/handle/1813/5410/Introducing_Zoomify_Image.pdf
 [Omeka Classic]: https://omeka.org
-[OpenLayers Zoom]: https://github.com/Daniel-KM/Omeka-plugin-OpenLayersZoom
-[Deepzoom Library]: https://github.com/Daniel-KM/LibraryDeepzoom
-[issues]: https://github.com/Daniel-KM/LibraryZoomify/issues
+[OpenLayers Zoom]: https://gitlab.com/Daniel-KM/Omeka-plugin-OpenLayersZoom
+[Deepzoom Library]: https://gitlab.com/Daniel-KM/LibraryDeepzoom
+[issues]: https://gitlab.com/Daniel-KM/LibraryZoomify/-/issues
 [GNU/GPL]: https://www.gnu.org/licenses/gpl-3.0.html
 [Bibliothèque patrimoniale]: https://patrimoine.mines-paristech.fr
 [Mines ParisTech]: http://mines-paristech.fr
-[Daniel-KM]: https://github.com/Daniel-KM "Daniel Berthereau"
+[Daniel-KM]: https://gitlab.com/Daniel-KM "Daniel Berthereau"

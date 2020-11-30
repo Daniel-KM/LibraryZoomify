@@ -13,11 +13,11 @@ namespace DanielKm\Zoomify;
  * Copyright 2005 Adam Smith (asmith@agile-software.com)
  * Copyright Wes Wright (http://greengaloshes.cc)
  * Copyright Justin Henry (http://greengaloshes.cc)
- * Copyright 2014-2019 Daniel Berthereau (Daniel.github@Berthereau.net)
+ * Copyright 2014-2019 Daniel Berthereau (Daniel.git@Berthereau.net)
  *
  * Ported from Python to PHP by Wes Wright
  * Cleanup for Drupal by Karim Ratib (kratib@open-craft.com)
- * Cleanup for Omeka Classic by Daniel Berthereau (daniel.github@berthereau.net)
+ * Cleanup for Omeka Classic by Daniel Berthereau (daniel.git@berthereau.net)
  * Conversion to ImageMagick by Daniel Berthereau
  * Set as a stand-alone library in Packagist and integrated in Omeka S.
  *
