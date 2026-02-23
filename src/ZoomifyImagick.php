@@ -4,7 +4,7 @@ namespace DanielKm\Zoomify;
 use Imagick;
 
 // Check the autoload.
-if (!class_exists('DanielKm\Zoomify\Zoomify')) {
+if (!class_exists('DanielKm\Zoomify\Zoomify', false)) {
     require_once __DIR__ . DIRECTORY_SEPARATOR . 'Zoomify.php';
 }
 
