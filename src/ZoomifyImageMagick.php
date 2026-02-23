@@ -358,14 +358,9 @@ class ZoomifyImageMagick extends Zoomify
     public function getConvertPath()
     {
         if (is_null($this->convertPath)) {
-            $command = 'whereis -b convert';
+            $command = 'command -v convert';
             $result = $this->execute($command);
-            if (empty($result)) {
-                $this->convertPath = '';
-            } else {
-                strtok($result, ' ');
-                $this->convertPath = trim(strtok(' '));
-            }
+            $this->convertPath = empty($result) ? '' : trim($result);
         }
         return $this->convertPath;
     }

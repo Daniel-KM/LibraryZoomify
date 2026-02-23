@@ -121,14 +121,9 @@ class ZoomifyVips extends Zoomify
     public function getVipsPath()
     {
         if (is_null($this->vipsPath)) {
-            $command = 'whereis -b vips';
+            $command = 'command -v vips';
             $result = $this->execute($command);
-            if (empty($result)) {
-                $this->vipsPath = '';
-            } else {
-                strtok($result, ' ');
-                $this->vipsPath = strtok(' ');
-            }
+            $this->vipsPath = empty($result) ? '' : trim($result);
         }
         return $this->vipsPath;
     }
