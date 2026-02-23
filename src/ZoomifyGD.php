@@ -311,8 +311,23 @@ class ZoomifyGD extends Zoomify
      */
     protected function saveImageToFile($image, $filepath)
     {
-        touch($filepath);
-        switch (strtolower(pathinfo($filepath, PATHINFO_EXTENSION))) {
+        $ext = strtolower(pathinfo($filepath, PATHINFO_EXTENSION));
+
+        if (!empty($this->data['icc']) && ($ext === 'jpg' || $ext === 'jpe' || $ext === 'jpeg')) {
+            ob_start();
+            imagejpeg($image, null, $this->tileQuality);
+            $imageData = ob_get_clean();
+            try {
+                $outputPel = new \lsolesen\pel\PelJpeg($imageData);
+                $outputPel->setIcc($this->data['icc']);
+                $outputPel->saveFile($filepath);
+            } catch (\Exception $e) {
+                file_put_contents($filepath, $imageData);
+            }
+            return;
+        }
+
+        switch ($ext) {
             case 'gif':
                 imagegif($image, $filepath, $this->tileQuality);
                 break;
@@ -327,15 +342,6 @@ class ZoomifyGD extends Zoomify
                 imagesavealpha($image, true);
                 imagepng($image, $filepath, $this->tileQuality);
                 break;
-        }
-
-        if (!empty($this->data['icc'])) {
-            try {
-                $outputPel = new \lsolesen\pel\PelJpeg($filepath);
-                $outputPel->setIcc($this->data['icc']);
-                $outputPel->saveFile($filepath);
-            } catch (\Exception $e) {
-            }
         }
     }
 
