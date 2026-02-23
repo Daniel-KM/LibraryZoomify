@@ -2,7 +2,7 @@
 namespace DanielKm\Zoomify;
 
 /**
- * Copyright 2014-2020 Daniel Berthereau (Daniel.git@Berthereau.net)
+ * Copyright 2014-2026 Daniel Berthereau (Daniel.git@Berthereau.net)
  *
  */
 trait ZoomifyCommandTrait

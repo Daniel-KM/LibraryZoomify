@@ -10,7 +10,7 @@ if (!class_exists('DanielKm\Zoomify\Zoomify', false)) {
  * Copyright 2005 Adam Smith (asmith@agile-software.com)
  * Copyright Wes Wright (http://greengaloshes.cc)
  * Copyright Justin Henry (http://greengaloshes.cc)
- * Copyright 2014-2020 Daniel Berthereau (Daniel.git@Berthereau.net)
+ * Copyright 2014-2026 Daniel Berthereau (Daniel.git@Berthereau.net)
  *
  * Ported from Python to PHP by Wes Wright
  * Cleanup for Drupal by Karim Ratib (kratib@open-craft.com)
