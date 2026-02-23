@@ -81,7 +81,11 @@ class ZoomifyVips extends Zoomify
     public function process($filepath, $destinationDir = '')
     {
         $this->_imageFilename = realpath($filepath);
-        $this->filepath = realpath($filepath);
+        if ($this->_imageFilename === false) {
+            throw new \Exception('File does not exist: ' . $filepath);
+        }
+
+        $this->filepath = $this->_imageFilename;
         $this->destinationDir = $destinationDir;
         $result = $this->createDataContainer();
         if (!$result) {
