@@ -138,6 +138,7 @@ class ZoomifyImageMagick extends Zoomify
 
         $imageRow = null;
         $imageRowSize = [];
+        $tempRow = null;
         $isThereFirstRowFile = false;
         $isThereSecondRowFile = false;
 
@@ -216,6 +217,23 @@ class ZoomifyImageMagick extends Zoomify
 
             if (!$isThereFirstRowFile) {
                 $imageRow = null;
+            } else {
+                // Materialize the composed row to a temp file to avoid
+                // re-executing the composition for each tile.
+                $tempRow = tempnam(sys_get_temp_dir(), 'zm_');
+                unlink($tempRow);
+                $tempRow .= '.' . $this->_tileExt;
+                $command = escapeshellarg($this->convertPath) . ' ' . $imageRow . ' +repage ' . escapeshellarg($tempRow);
+                $this->execute($command);
+                // Source row files are no longer needed.
+                @unlink($firstRowFile);
+                if ($isThereSecondRowFile) {
+                    @unlink($secondRowFile);
+                }
+                $isThereFirstRowFile = false;
+                $isThereSecondRowFile = false;
+                // Use the materialized temp file for tiling and resize.
+                $imageRow = ' -quality ' . (int) $this->tileQuality . ' ' . escapeshellarg($tempRow);
             }
         }
 
@@ -288,6 +306,9 @@ class ZoomifyImageMagick extends Zoomify
                     @unlink($secondRowFile);
                 }
             }
+            if ($tempRow) {
+                @unlink($tempRow);
+            }
 
             // Process next tiers via a recursive call.
             if ($tier > 0) {
@@ -314,10 +335,10 @@ class ZoomifyImageMagick extends Zoomify
     protected function imageResizeCrop($source, $destination, $resize = [], $crop = [])
     {
         $params = [];
-        // Clean the canvas.
-        $params[] = '+repage';
-        $params[] = '-flatten';
         if ($resize) {
+            // Clean the canvas only when processing from source.
+            $params[] = '+repage';
+            $params[] = '-flatten';
             $params[] = '-thumbnail ' . escapeshellarg(sprintf('%sx%s!', $resize['width'], $resize['height']));
         }
         if ($crop) {
