@@ -264,10 +264,8 @@ class ZoomifyImagick extends Zoomify
                 //previous tier, if it exists, is removed.
                 $rowFilename = $root . '-' . $tier . '-' . $row . '.' . $ext;
 
-                $tempImage = clone $imageRow;
-                $tempImage->resizeImage($halfWidth, $halfHeight, Imagick::FILTER_LANCZOS, 1, false);
-                $tempImage->writeImage($rowFilename);
-                $tempImage->destroy();
+                $imageRow->resizeImage($halfWidth, $halfHeight, Imagick::FILTER_LANCZOS, 1, false);
+                $imageRow->writeImage($rowFilename);
             }
 
             // http://greengaloshes.cc/2007/05/zoomifyimage-ported-to-php/#comment-451
