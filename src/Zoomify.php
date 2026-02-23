@@ -156,6 +156,10 @@ class Zoomify
             $processorImageMagick = new ZoomifyImageMagick();
             if ($processorVips->getVipsPath()) {
                 $this->processor = 'Vips';
+            } elseif ((extension_loaded('vips') || extension_loaded('ffi'))
+                && class_exists('Jcupitt\Vips\Image')
+            ) {
+                $this->processor = 'PhpVips';
             } elseif ($processorImageMagick->getConvertPath()) {
                 $this->processor = 'ImageMagick';
             } elseif (extension_loaded('imagick')) {
@@ -194,6 +198,14 @@ class Zoomify
                 throw new \Exception('Vips path is not available.');
             }
         }
+        // PHP Vips.
+        elseif ($this->processor === 'PhpVips') {
+            if ((!extension_loaded('vips') && !extension_loaded('ffi'))
+                || !class_exists('Jcupitt\Vips\Image')
+            ) {
+                throw new \Exception('php-vips library is not available.');
+            }
+        }
         // Error.
         else {
             throw new \Exception('No graphic library available.');
@@ -227,6 +239,10 @@ class Zoomify
             case 'Vips':
                 require_once __DIR__ . DIRECTORY_SEPARATOR . 'ZoomifyVips.php';
                 $processor = new ZoomifyVips($this->config);
+                break;
+            case 'PhpVips':
+                require_once __DIR__ . DIRECTORY_SEPARATOR . 'ZoomifyPhpVips.php';
+                $processor = new ZoomifyPhpVips($this->config);
                 break;
             default:
                 throw new \Exception('No graphic library available.');

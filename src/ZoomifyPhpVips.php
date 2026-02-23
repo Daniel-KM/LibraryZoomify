@@ -2,7 +2,7 @@
 namespace DanielKm\Zoomify;
 
 // Check the autoload.
-if (!class_exists('DanielKm\Zoomify\Zoomify')) {
+if (!class_exists('DanielKm\Zoomify\Zoomify', false)) {
     require_once __DIR__ . DIRECTORY_SEPARATOR . 'Zoomify.php';
 }
 
@@ -10,7 +10,7 @@ if (!class_exists('DanielKm\Zoomify\Zoomify')) {
  * Copyright 2005 Adam Smith (asmith@agile-software.com)
  * Copyright Wes Wright (http://greengaloshes.cc)
  * Copyright Justin Henry (http://greengaloshes.cc)
- * Copyright 2014-2020 Daniel Berthereau (Daniel.git@Berthereau.net)
+ * Copyright 2014-2026 Daniel Berthereau (Daniel.git@Berthereau.net)
  *
  * Ported from Python to PHP by Wes Wright
  * Cleanup for Drupal by Karim Ratib (kratib@open-craft.com)
@@ -32,24 +32,8 @@ if (!class_exists('DanielKm\Zoomify\Zoomify')) {
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-class ZoomifyVips extends Zoomify
+class ZoomifyPhpVips extends Zoomify
 {
-    use ZoomifyCommandTrait;
-
-    /**
-     * The path to command line vips.
-     *
-     * @var string
-     */
-    protected $vipsPath;
-
-    /**
-     * The strategy to use by php to process a command ("exec" or "proc_open").
-     *
-     * @var string
-     */
-    protected $executeStrategy;
-
     /**
      * Constructor.
      *
@@ -93,19 +77,15 @@ class ZoomifyVips extends Zoomify
             return false;
         }
 
-        $command = sprintf(
-            '%s dzsave %s %s --layout zoomify --suffix %s --overlap %s --tile-size %s --background "0 0 0" --properties',
-            $this->vipsPath,
-            escapeshellarg($this->filepath),
-            escapeshellarg($this->_saveToLocation),
-            escapeshellarg('.' . $this->tileFormat . '[Q=' . (int) $this->tileQuality . ']'),
-            (int) $this->tileOverlap,
-            (int) $this->tileSize
-        );
-        $result = $this->execute($command);
-        if ($result === false) {
-            return false;
-        }
+        $image = \Jcupitt\Vips\Image::newFromFile($this->filepath);
+        $image->dzsave($this->_saveToLocation, [
+            'layout' => 'zoomify',
+            'suffix' => '.' . $this->tileFormat . '[Q=' . (int) $this->tileQuality . ']',
+            'overlap' => (int) $this->tileOverlap,
+            'tile_size' => (int) $this->tileSize,
+            'background' => [0, 0, 0],
+            'properties' => true,
+        ]);
 
         // For an undetermined reason, the vips xml may be saved in a sub-folder
         // on some servers.
@@ -115,20 +95,5 @@ class ZoomifyVips extends Zoomify
             rmdir($this->_saveToLocation . '/' . basename($this->_saveToLocation));
         }
         return true;
-    }
-
-    /**
-     * Helper to get the command line tool vips.
-     *
-     * @return string
-     */
-    public function getVipsPath()
-    {
-        if (is_null($this->vipsPath)) {
-            $command = 'command -v vips';
-            $result = $this->execute($command);
-            $this->vipsPath = empty($result) ? '' : trim($result);
-        }
-        return $this->vipsPath;
     }
 }
