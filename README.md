@@ -19,47 +19,51 @@ Usage
 ### Direct use without the factory
 
 ```php
-    // Setup the Zoomify library.
-    $zoomify = new \DanielKm\Zoomify\Zoomify($config);
+// Setup the Zoomify library.
+$zoomify = new \DanielKm\Zoomify\Zoomify($config);
 
-    // Process a source file and save tiles in a destination folder.
-    $result = $zoomify->process($source, $destination);
+// Process a source file and save tiles in a destination folder.
+$result = $zoomify->process($source, $destination);
 ```
 
 ### Direct invocation with the factory
 
 ```php
-    // Setup the Zoomify library.
-    $factory = new \DanielKm\Zoomify\ZoomifyFactory;
-    $zoomify = $factory($config);
+// Setup the Zoomify library.
+$factory = new \DanielKm\Zoomify\ZoomifyFactory;
+$zoomify = $factory($config);
 
-    // Process a source file and save tiles in a destination folder.
-    $result = $zoomify->process($source, $destination);
+// Process a source file and save tiles in a destination folder.
+$result = $zoomify->process($source, $destination);
 ```
-### Config object
-| Property           | Default Value | Value Type | Description | Accepted Values |
-|--------------------|---------------|------------|---|-------------------|
-| processor          | 'GD'          | string     | The image processing library to use | 'GD', 'Imagick', 'ImageMagick', 'Vips'  |
-| filepath           | None          | string     | The path to the input image   | Any valid file path to an image file (e.g., 'input/image-path') |
-| destinationDir     | None          | string     | The path to the destination directory where the tiles will be saved | Any valid directory path (e.g., 'output-path')  |
-| destinationRemove  | false         | boolean    | Whether to remove existing content in the destination directory before processing  | true, false |
-| dirMode            | 0755          | int        | The file system mode (permissions) for created directories  | Any valid Unix file system mode (e.g., 0755, 0775, 0777)  |
-| tileSize           | 256           | int        | The size of the tiles in pixels  | Any positive integer value (e.g., 256, 512, 1024)  |
-| tileOverlap        | 0             | int        | The overlap of tiles in pixels   | Any non-negative integer value (e.g., 0, 1, 2)     |
-| tileFormat         | 'jpg'         | string     | The format of the output tiles   | 'jpg', 'png', 'gif', or any other supported image format by the selected processor           |
-| tileQuality        | 85            | int        | The quality of the output tiles (only applicable for lossy formats like JPEG)                         | Any integer value between 1 and 100 (inclusive), where 1 is the lowest quality (highest compression) and 100 is the highest quality (lowest compression) 
+
+### Config
+
+| Property          | Default | Type    | Description                                                      |
+|-------------------|---------|---------|------------------------------------------------------------------|
+| processor         | auto    | string  | Image library: `Vips`, `PhpVips`, `ImageMagick`, `Imagick`, `GD` |
+| destinationRemove | false   | boolean | Remove existing tiles before processing                          |
+| dirMode           | 0755    | int     | File system permissions for created directories                  |
+| tileSize          | 256     | int     | Size of tiles in pixels                                          |
+| tileOverlap       | 0       | int     | Overlap of tiles in pixels                                       |
+| tileFormat        | 'jpg'   | string  | Format of output tiles: `jpg`, `png`, `gif`                      |
+| tileQuality       | 85      | int     | Quality of output tiles (1-100, for lossy formats)               |
+| convertPath       | auto    | string  | Path to ImageMagick `convert` binary                             |
+| vipsPath          | auto    | string  | Path to `vips` binary                                            |
+| executeStrategy   | 'exec'  | string  | PHP execution strategy: `exec`, `proc_open`                      |
 
 #### Example
-```
-// Set your configuration options
+
+```php
 $config = [
     'tileSize' => 512,
-    'tileOverlap' => 0,
+    'tileOverlap' => 1,
     'tileQuality' => 100,
     'destinationRemove' => true,
-    'processor' => 'Vips'
+    'processor' => 'Vips',
 ];
 ```
+
 
 Supported image libraries
 -------------------------
@@ -67,10 +71,11 @@ Supported image libraries
 The format of the image source can be anything that is managed by the image
 library:
 
-- PHP Extension [GD] (>=2.0)
-- PHP extension [Imagick] (>=6.5.6)
-- Command line `convert` [ImageMagick] (>=6.0)
 - Command line `vips` [Vips] (>=8.0)
+- Composer library [php-vips] with PHP extension ext-vips or ext-ffi
+- Command line `magick` / `convert` [ImageMagick] (>=6.0)
+- PHP extension [Imagick] (>=6.5.6)
+- PHP Extension [GD] (>=2.0)
 
 The PHP library `exif` should be installed (generally enabled by default).
 
@@ -140,7 +145,7 @@ Copyright
 * Copyright 2005 Adam Smith (asmith@agile-software.com)
 * Copyright Wes Wright (http://greengaloshes.cc)
 * Copyright Justin Henry (http://greengaloshes.cc)
-* Copyright 2014-2020 Daniel Berthereau (see [Daniel-KM])
+* Copyright 2014-2026 Daniel Berthereau (see [Daniel-KM])
 
 
 [Zoomify]: https://gitlab.com/Daniel-KM/LibraryZoomify
@@ -154,6 +159,7 @@ Copyright
 [Imagick]: https://php.net/manual/en/book.imagick.php
 [ImageMagick]: https://www.imagemagick.org/
 [Vips]: https://libvips.github.io/libvips
+[php-vips]: https://github.com/libvips/php-vips
 [Zoomify viewer]: http://www.zoomify.com/
 [here]: https://ecommons.cornell.edu/bitstream/handle/1813/5410/Introducing_Zoomify_Image.pdf
 [Omeka Classic]: https://omeka.org
