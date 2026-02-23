@@ -50,8 +50,17 @@
         "ext-vips": "PHP extension for vips (for PhpVips processor).",
         "jcupitt/vips": "PHP library for vips (for PhpVips processor)."
     },
+    "autoload-dev": {
+        "psr-4": {
+            "DanielKm\\Zoomify\\Test\\": "tests/"
+        }
+    },
     "require": {
         "php": ">=5.4.0",
         "lsolesen/pel": "^0.9.6"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.5",
+        "jcupitt/vips": "^1.0"
     }
 }
