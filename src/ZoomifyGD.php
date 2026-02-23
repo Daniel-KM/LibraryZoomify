@@ -279,6 +279,9 @@ class ZoomifyGD extends Zoomify
     {
         switch (strtolower(pathinfo($filepath, PATHINFO_EXTENSION))) {
             case 'bmp':
+                if (!function_exists('imagecreatefrombmp')) {
+                    throw new \Exception('BMP support requires PHP 7.2+.');
+                }
                 return imagecreatefrombmp($filepath);
             case 'gd':
                 return imagecreatefromgd($filepath);
