@@ -95,7 +95,7 @@ class ZoomifyVips extends Zoomify
 
         $command = sprintf(
             '%s dzsave %s %s --layout zoomify --suffix %s --overlap %s --tile-size %s --background "0 0 0" --properties',
-            $this->vipsPath,
+            escapeshellarg($this->vipsPath),
             escapeshellarg($this->filepath),
             escapeshellarg($this->_saveToLocation),
             escapeshellarg('.' . $this->tileFormat . '[Q=' . (int) $this->tileQuality . ']'),

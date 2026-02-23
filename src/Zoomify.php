@@ -74,7 +74,7 @@ class Zoomify
     /**
      * If an existing destination should be removed.
      *
-     * @var int
+     * @var bool
      */
     protected $destinationRemove = false;
 
@@ -116,7 +116,7 @@ class Zoomify
     /**
      * Various metadata of the source and tiles.
      *
-     * @array
+     * @var array
      */
     protected $data = [];
 
@@ -171,19 +171,19 @@ class Zoomify
             }
         }
         // GD.
-        elseif ($this->processor == 'GD') {
+        elseif ($this->processor === 'GD') {
             if (!extension_loaded('gd')) {
                 throw new \Exception('GD library is not available.');
             }
         }
         // Imagick.
-        elseif ($this->processor == 'Imagick') {
+        elseif ($this->processor === 'Imagick') {
             if (!extension_loaded('imagick')) {
                 throw new \Exception('Imagick library is not available.');
             }
         }
         // CLI ImageMagick.
-        elseif ($this->processor == 'ImageMagick') {
+        elseif ($this->processor === 'ImageMagick') {
             require_once __DIR__ . DIRECTORY_SEPARATOR . 'ZoomifyImageMagick.php';
             $processor = new ZoomifyImageMagick();
             if (!$processor->getConvertPath()) {
@@ -191,7 +191,7 @@ class Zoomify
             }
         }
         // CLI Vips.
-        elseif ($this->processor == 'Vips') {
+        elseif ($this->processor === 'Vips') {
             require_once __DIR__ . DIRECTORY_SEPARATOR . 'ZoomifyVips.php';
             $processor = new ZoomifyVips();
             if (!$processor->getVipsPath()) {
@@ -313,7 +313,7 @@ class Zoomify
         if ($this->destinationDir) {
             $location = $this->destinationDir;
         }
-        //Determine the path to the directory from the filepath.
+        // Determine the path to the directory from the filepath.
         else {
             list($root) = $this->getRootAndDotExtension($this->_imageFilename);
             $directory = dirname($root);
@@ -344,6 +344,8 @@ class Zoomify
 
     /**
      * Create a container for the next group of tiles within the data container.
+     *
+     * @param string $tileContainerName
      */
     protected function createTileContainer($tileContainerName = '')
     {
@@ -372,13 +374,13 @@ class Zoomify
             $ul_y = 0;
             $lr_x = 0;
             $lr_y = 0;
-            while (!(($lr_x == $width) && ($lr_y == $height))) {
+            while (!(($lr_x === $width) && ($lr_y === $height))) {
                 $tileFilename = $this->getTileFilename($tier, $column, $row);
                 $tileContainerName = $this->getNewTileContainerName($tileGroupNumber);
 
-                if ($numberOfTiles == 0) {
+                if ($numberOfTiles === 0) {
                     $this->createTileContainer($tileContainerName);
-                } elseif ($numberOfTiles % $this->tileSize == 0) {
+                } elseif ($numberOfTiles % $this->tileSize === 0) {
                     ++$tileGroupNumber;
                     $tileContainerName = $this->getNewTileContainerName($tileGroupNumber);
                     $this->createTileContainer($tileContainerName);
@@ -391,7 +393,7 @@ class Zoomify
                 $lr_y = ($ul_y + $this->tileSize < $height) ? $ul_y + $this->tileSize : $height;
 
                 // for the next tile, set upper left cropping point
-                if ($lr_x == $width) {
+                if ($lr_x === $width) {
                     $ul_x = 0;
                     $ul_y = $lr_y;
                     $column = 0;
@@ -409,6 +411,7 @@ class Zoomify
      * Explode a filepath in a root and an extension, i.e. "/path/file.ext" to
      * "/path/file" and ".ext".
      *
+     * @param string $filepath
      * @return array
      */
     protected function getRootAndDotExtension($filepath)
@@ -421,26 +424,33 @@ class Zoomify
     /**
      * Get the name of the file for the tile.
      *
+     * @param int $scaleNumber
+     * @param int $columnNumber
+     * @param int $rowNumber
      * @return string
      */
     protected function getTileFilename($scaleNumber, $columnNumber, $rowNumber)
     {
-        return (string) $scaleNumber . '-' . (string) $columnNumber . '-' . (string) $rowNumber . '.' . $this->_tileExt;
+        return $scaleNumber . '-' . $columnNumber . '-' . $rowNumber . '.' . $this->_tileExt;
     }
 
     /**
      * Return the name of the next tile group container.
      *
+     * @param int $tileGroupNumber
      * @return string
      */
     protected function getNewTileContainerName($tileGroupNumber = 0)
     {
-        return 'TileGroup' . (string) $tileGroupNumber;
+        return 'TileGroup' . $tileGroupNumber;
     }
 
     /**
      * Get the full path of the file the tile will be saved as.
      *
+     * @param int $scaleNumber
+     * @param int $columnNumber
+     * @param int $rowNumber
      * @return string
      */
     protected function getFileReference($scaleNumber, $columnNumber, $rowNumber)
@@ -453,6 +463,7 @@ class Zoomify
     /**
      * Return the name of the tile group for the indicated tile.
      *
+     * @param string $tileFilename
      * @return string
      */
     protected function getAssignedTileContainerName($tileFilename)
@@ -503,7 +514,7 @@ class Zoomify
     /**
      * Remove a dir from filesystem.
      *
-     * @param string $dirpath
+     * @param string $dirPath
      * @return bool
      */
     protected function rmDir($dirPath)

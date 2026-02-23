@@ -135,7 +135,7 @@ class ZoomifyImagick extends Zoomify
 
         // Create row for the current tier.
         // First tier.
-        if ($tier == count($this->_scaleInfo) - 1) {
+        if ($tier === count($this->_scaleInfo) - 1) {
             $firstTierRowFile = $root . '-' . $tier . '-' . $row . '.' . $ext;
             if (is_file($firstTierRowFile)) {
                 $imageRow = new Imagick();
@@ -224,7 +224,7 @@ class ZoomifyImagick extends Zoomify
             $lr_x = 0;
             $lr_y = 0;
             // TODO Use an automatic tiling.
-            while (!(($lr_x == $imageWidth) && ($lr_y == $imageHeight))) {
+            while (!(($lr_x === $imageWidth) && ($lr_y === $imageHeight))) {
                 // Set lower right cropping point.
                 $lr_x = (($ul_x + $this->tileSize) < $imageWidth)
                    ? $ul_x + $this->tileSize
@@ -244,11 +244,10 @@ class ZoomifyImagick extends Zoomify
                 $this->_numberOfTiles++;
 
                 // Set upper left cropping point.
-                if ($lr_x == $imageWidth) {
+                if ($lr_x === $imageWidth) {
                     $ul_x = 0;
                     $ul_y = $lr_y;
                     $column = 0;
-                #row += 1
                 } else {
                     $ul_x = $lr_x;
                     ++$column;
@@ -273,9 +272,9 @@ class ZoomifyImagick extends Zoomify
 
             // Process next tiers via a recursive call.
             if ($tier > 0) {
-                if ($row % 2 != 0) {
+                if ($row % 2 !== 0) {
                     $this->processRowImage($tier - 1, floor(($row - 1) / 2));
-                } elseif ($row == $rowsForTier - 1) {
+                } elseif ($row === $rowsForTier - 1) {
                     $this->processRowImage($tier - 1, floor($row / 2));
                 }
             }

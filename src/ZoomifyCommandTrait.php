@@ -65,9 +65,9 @@ trait ZoomifyCommandTrait
         // directory cannot be set properly via exec().  Note that exec() works
         // fine when executing in the web environment but fails in CLI.
         $descriptorSpec = [
-            0 => ['pipe', 'r'], //STDIN
-            1 => ['pipe', 'w'], //STDOUT
-            2 => ['pipe', 'w'], //STDERR
+            0 => ['pipe', 'r'], // STDIN
+            1 => ['pipe', 'w'], // STDOUT
+            2 => ['pipe', 'w'], // STDERR
         ];
         $pipes = [];
         $proc = proc_open($command, $descriptorSpec, $pipes, getcwd());

@@ -102,7 +102,6 @@ class ZoomifyGD extends Zoomify
                 : $this->_originalHeight;
             $saveFilename = $this->_saveToLocation . DIRECTORY_SEPARATOR . $tier . '-' . $row . '.jpg';
             $imageRow = $this->imageCrop($image, 0, $ul_y, $this->_originalWidth, $lr_y);
-            touch($saveFilename);
             imagejpeg($imageRow, $saveFilename, 100);
             imagedestroy($imageRow);
             $this->processRowImage($tier, $row);
@@ -126,7 +125,7 @@ class ZoomifyGD extends Zoomify
 
         // Create row for the current tier.
         // First tier.
-        if ($tier == count($this->_scaleInfo) - 1) {
+        if ($tier === count($this->_scaleInfo) - 1) {
             $firstTierRowFile = $this->_saveToLocation . DIRECTORY_SEPARATOR . $tier . '-' . $row . '.jpg';
             if (is_file($firstTierRowFile)) {
                 $imageRow = imagecreatefromjpeg($firstTierRowFile);
@@ -201,7 +200,7 @@ class ZoomifyGD extends Zoomify
             $ul_y = 0;
             $lr_x = 0;
             $lr_y = 0;
-            while (!(($lr_x == $imageWidth) && ($lr_y == $imageHeight))) {
+            while (!(($lr_x === $imageWidth) && ($lr_y === $imageHeight))) {
                 // Set lower right cropping point.
                 $lr_x = (($ul_x + $this->tileSize) < $imageWidth)
                     ? $ul_x + $this->tileSize
@@ -218,11 +217,10 @@ class ZoomifyGD extends Zoomify
                 $this->_numberOfTiles++;
 
                 // Set upper left cropping point.
-                if ($lr_x == $imageWidth) {
+                if ($lr_x === $imageWidth) {
                     $ul_x = 0;
                     $ul_y = $lr_y;
                     $column = 0;
-                #row += 1
                 } else {
                     $ul_x = $lr_x;
                     ++$column;
@@ -240,7 +238,6 @@ class ZoomifyGD extends Zoomify
 
                 $tempImage = imagecreatetruecolor($halfWidth, $halfHeight);
                 imagecopyresampled($tempImage, $imageRow, 0, 0, 0, 0, $halfWidth, $halfHeight, $imageWidth, $imageHeight);
-                touch($rowFilename);
                 imagejpeg($tempImage, $rowFilename);
                 imagedestroy($tempImage);
             }
@@ -250,9 +247,9 @@ class ZoomifyGD extends Zoomify
 
             // Process next tiers via a recursive call.
             if ($tier > 0) {
-                if ($row % 2 != 0) {
+                if ($row % 2 !== 0) {
                     $this->processRowImage($tier - 1, floor(($row - 1) / 2));
-                } elseif ($row == $rowsForTier - 1) {
+                } elseif ($row === $rowsForTier - 1) {
                     $this->processRowImage($tier - 1, floor($row / 2));
                 }
             }
@@ -351,6 +348,11 @@ class ZoomifyGD extends Zoomify
     /**
      * Crop an image to a size.
      *
+     * @param resource $image
+     * @param int $left
+     * @param int $upper
+     * @param int $right
+     * @param int $lower
      * @return resource Identifier of the image.
      */
     protected function imageCrop($image, $left, $upper, $right, $lower)
