@@ -237,10 +237,8 @@ class ZoomifyImagick extends Zoomify
 
                 $tileFilename = $this->getFileReference($tier, $column, $row);
 
-                $tileImage = clone $imageRow;
-                // Clean the canvas.
+                $tileImage = $imageRow->getImageRegion($width, $height, $ul_x, $ul_y);
                 $tileImage->setImagePage(0, 0, 0, 0);
-                $tileImage->cropImage($width, $height, $ul_x, $ul_y);
                 $tileImage->writeImage($tileFilename);
                 $tileImage->destroy();
                 $this->_numberOfTiles++;
