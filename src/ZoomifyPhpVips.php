@@ -78,6 +78,10 @@ class ZoomifyPhpVips extends Zoomify
         }
 
         $image = \Jcupitt\Vips\Image::newFromFile($this->filepath);
+        // Auto-orient based on EXIF data.
+        if (!$this->noRotate) {
+            $image = $image->autorot();
+        }
         $image->dzsave($this->_saveToLocation, [
             'layout' => 'zoomify',
             'suffix' => '.' . $this->tileFormat . '[Q=' . (int) $this->tileQuality . ']',

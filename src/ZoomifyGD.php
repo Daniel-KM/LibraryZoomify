@@ -83,6 +83,10 @@ class ZoomifyGD extends Zoomify
         if (empty($image)) {
             throw new \Exception('GD cannot manage the image.');
         }
+        // Auto-orient based on EXIF data.
+        if (!$this->noRotate) {
+            $image = $this->autoOrientGd($image, $this->_imageFilename);
+        }
         switch (strtolower(pathinfo($this->filepath, PATHINFO_EXTENSION))) {
             case 'jpg':
             case 'jpe':
@@ -343,6 +347,57 @@ class ZoomifyGD extends Zoomify
                 imagepng($image, $filepath, $this->tileQuality);
                 break;
         }
+    }
+
+    /**
+     * Auto-orient a GD image based on EXIF data.
+     *
+     * @param resource $image
+     * @param string $filepath
+     * @return resource
+     */
+    protected function autoOrientGd($image, $filepath)
+    {
+        $exif = @exif_read_data($filepath);
+        if (!$exif || empty($exif['Orientation']) || $exif['Orientation'] <= 1) {
+            return $image;
+        }
+        switch ($exif['Orientation']) {
+            case 2:
+                imageflip($image, IMG_FLIP_HORIZONTAL);
+                break;
+            case 3:
+                $rotated = imagerotate($image, 180, 0);
+                imagedestroy($image);
+                $image = $rotated;
+                break;
+            case 4:
+                imageflip($image, IMG_FLIP_VERTICAL);
+                break;
+            case 5:
+                $rotated = imagerotate($image, 270, 0);
+                imagedestroy($image);
+                imageflip($rotated, IMG_FLIP_HORIZONTAL);
+                $image = $rotated;
+                break;
+            case 6:
+                $rotated = imagerotate($image, 270, 0);
+                imagedestroy($image);
+                $image = $rotated;
+                break;
+            case 7:
+                $rotated = imagerotate($image, 90, 0);
+                imagedestroy($image);
+                imageflip($rotated, IMG_FLIP_HORIZONTAL);
+                $image = $rotated;
+                break;
+            case 8:
+                $rotated = imagerotate($image, 90, 0);
+                imagedestroy($image);
+                $image = $rotated;
+                break;
+        }
+        return $image;
     }
 
     /**

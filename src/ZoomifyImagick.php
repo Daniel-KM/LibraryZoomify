@@ -98,6 +98,23 @@ class ZoomifyImagick extends Zoomify
         }
         $image->destroy();
 
+        // Auto-orient to a temp file before tiling.
+        $source = $this->_imageFilename;
+        $tempOriented = null;
+        if (!$this->noRotate) {
+            $img = new Imagick();
+            $img->readImage($this->_imageFilename);
+            if ($img->getImageOrientation() > 1) {
+                $img->autoOrient();
+                $tempOriented = tempnam(sys_get_temp_dir(), 'zm_orient_');
+                unlink($tempOriented);
+                $tempOriented .= '.' . $ext;
+                $img->writeImage($tempOriented);
+                $source = $tempOriented;
+            }
+            $img->destroy();
+        }
+
         // Create a row from the original image and process it.
         while ($row * $this->tileSize < $this->_originalHeight) {
             $ul_y = $row * $this->tileSize;
@@ -108,13 +125,17 @@ class ZoomifyImagick extends Zoomify
             $width = $this->_originalWidth;
             $height = abs($lr_y - $ul_y);
             $imageRow = new Imagick();
-            $imageRow->readImage($this->_imageFilename);
+            $imageRow->readImage($source);
             $imageRow->cropImage($width, $height, 0, $ul_y);
             $imageRow->writeImage($saveFilename);
             $imageRow->destroy();
 
             $this->processRowImage($tier, $row);
             ++$row;
+        }
+
+        if ($tempOriented) {
+            @unlink($tempOriented);
         }
     }
 

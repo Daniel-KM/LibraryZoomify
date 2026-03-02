@@ -102,6 +102,21 @@ class ZoomifyImageMagick extends Zoomify
 
         list($root, $ext) = $this->getRootAndDotExtension($this->_imageFilename);
 
+        // Auto-orient the source before tiling.
+        $source = $this->_imageFilename;
+        $tempOriented = null;
+        if (!$this->noRotate) {
+            $tempOriented = tempnam(sys_get_temp_dir(), 'zm_orient_');
+            unlink($tempOriented);
+            $tempOriented .= '.' . ($ext ?: 'jpg');
+            $this->convert($this->_imageFilename, $tempOriented, ['-auto-orient']);
+            if (file_exists($tempOriented)) {
+                $source = $tempOriented;
+            } else {
+                $tempOriented = null;
+            }
+        }
+
         // Create a row from the original image and process it.
         while ($row * $this->tileSize < $this->_originalHeight) {
             $ul_y = $row * $this->tileSize;
@@ -116,10 +131,14 @@ class ZoomifyImageMagick extends Zoomify
             $crop['height'] = $height;
             $crop['x'] = 0;
             $crop['y'] = $ul_y;
-            $this->imageResizeCrop($this->_imageFilename, $saveFilename, [], $crop);
+            $this->imageResizeCrop($source, $saveFilename, [], $crop);
 
             $this->processRowImage($tier, $row);
             ++$row;
+        }
+
+        if ($tempOriented) {
+            @unlink($tempOriented);
         }
     }
 

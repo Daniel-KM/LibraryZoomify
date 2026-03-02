@@ -93,16 +93,44 @@ class ZoomifyVips extends Zoomify
             return false;
         }
 
+        $source = $this->filepath;
+        $tempOriented = null;
+
+        // Auto-orient before tiling.
+        if (!$this->noRotate) {
+            $ext = pathinfo($this->filepath, PATHINFO_EXTENSION) ?: 'v';
+            $tempOriented = tempnam(sys_get_temp_dir(), 'zm_orient_');
+            unlink($tempOriented);
+            $tempOriented .= '.' . $ext;
+            $command = sprintf(
+                '%s autorot %s %s',
+                escapeshellarg($this->vipsPath),
+                escapeshellarg($this->filepath),
+                escapeshellarg($tempOriented)
+            );
+            if ($this->execute($command) !== false && file_exists($tempOriented)) {
+                $source = $tempOriented;
+            } else {
+                @unlink($tempOriented);
+                $tempOriented = null;
+            }
+        }
+
         $command = sprintf(
             '%s dzsave %s %s --layout zoomify --suffix %s --overlap %s --tile-size %s --background "0 0 0" --properties',
             escapeshellarg($this->vipsPath),
-            escapeshellarg($this->filepath),
+            escapeshellarg($source),
             escapeshellarg($this->_saveToLocation),
             escapeshellarg('.' . $this->tileFormat . '[Q=' . (int) $this->tileQuality . ']'),
             (int) $this->tileOverlap,
             (int) $this->tileSize
         );
         $result = $this->execute($command);
+
+        if ($tempOriented) {
+            @unlink($tempOriented);
+        }
+
         if ($result === false) {
             return false;
         }

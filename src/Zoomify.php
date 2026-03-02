@@ -114,6 +114,13 @@ class Zoomify
     protected $tileQuality = 85;
 
     /**
+     * Whether to skip auto-orientation based on EXIF data.
+     *
+     * @var bool
+     */
+    protected $noRotate = false;
+
+    /**
      * Various metadata of the source and tiles.
      *
      * @var array
@@ -286,6 +293,14 @@ class Zoomify
     protected function getImageMetadata()
     {
         list($this->_originalWidth, $this->_originalHeight, $this->_originalFormat) = getimagesize($this->_imageFilename);
+        // EXIF orientations 5-8 indicate a 90° or 270°
+        // rotation, so width and height must be swapped.
+        if (!$this->noRotate) {
+            $exif = @exif_read_data($this->_imageFilename);
+            if ($exif && !empty($exif['Orientation']) && $exif['Orientation'] >= 5) {
+                list($this->_originalWidth, $this->_originalHeight) = [$this->_originalHeight, $this->_originalWidth];
+            }
+        }
 
         // Get scaling information.
         $width = $this->_originalWidth;
