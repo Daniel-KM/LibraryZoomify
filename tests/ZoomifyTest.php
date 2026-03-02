@@ -104,6 +104,62 @@ class ZoomifyTest extends TestCase
     }
 
     // ------------------------------------------------------------------
+    // EXIF orientation tests
+    // ------------------------------------------------------------------
+
+    /**
+     * @dataProvider validProcessorProvider
+     */
+    public function testExifOrientationSwapsDimensions(
+        string $processor
+    ): void {
+        $this->skipIfProcessorUnavailable($processor);
+
+        $dest = $this->getTempPath();
+        $config = $this->getProcessorConfig($processor);
+        $config['destinationRemove'] = true;
+        $z = new Zoomify($config);
+        $result = $z->process($this->fixtureExif6ImagePath(), $dest);
+        $this->assertTrue($result, "process() failed for $processor");
+
+        $xmlPath = $dest . DIRECTORY_SEPARATOR . 'ImageProperties.xml';
+        $this->assertFileExists($xmlPath);
+        $props = $this->parseImageProperties($xmlPath);
+        // Raw pixels are 100x60, EXIF orientation 6 means 90° CW,
+        // so auto-oriented dimensions should be 60x100.
+        $this->assertSame(60, $props['width'],
+            "Width should be 60 after auto-orient ($processor)");
+        $this->assertSame(100, $props['height'],
+            "Height should be 100 after auto-orient ($processor)");
+    }
+
+    /**
+     * @dataProvider validProcessorProvider
+     */
+    public function testNoRotateKeepsRawDimensions(
+        string $processor
+    ): void {
+        $this->skipIfProcessorUnavailable($processor);
+
+        $dest = $this->getTempPath();
+        $config = $this->getProcessorConfig($processor);
+        $config['destinationRemove'] = true;
+        $config['noRotate'] = true;
+        $z = new Zoomify($config);
+        $result = $z->process($this->fixtureExif6ImagePath(), $dest);
+        $this->assertTrue($result, "process() failed for $processor");
+
+        $xmlPath = $dest . DIRECTORY_SEPARATOR . 'ImageProperties.xml';
+        $this->assertFileExists($xmlPath);
+        $props = $this->parseImageProperties($xmlPath);
+        // With noRotate, raw pixel dimensions are preserved.
+        $this->assertSame(100, $props['width'],
+            "Width should be 100 with noRotate ($processor)");
+        $this->assertSame(60, $props['height'],
+            "Height should be 60 with noRotate ($processor)");
+    }
+
+    // ------------------------------------------------------------------
     // Smoke tests per processor
     // ------------------------------------------------------------------
 

@@ -68,6 +68,16 @@ trait TestHelpersTrait
     }
 
     /**
+     * Path to a small JPEG with EXIF orientation 6 (90° CW).
+     *
+     * Raw pixels are 100x60; after auto-orient: 60x100.
+     */
+    protected function fixtureExif6ImagePath(): string
+    {
+        return __DIR__ . '/fixtures/test-image-exif6.jpg';
+    }
+
+    /**
      * Skip test if the processor is not available.
      */
     protected function skipIfProcessorUnavailable(string $processor): void
