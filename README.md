@@ -48,6 +48,7 @@ $result = $zoomify->process($source, $destination);
 | tileOverlap       | 0       | int     | Overlap of tiles in pixels                                       |
 | tileFormat        | 'jpg'   | string  | Format of output tiles: `jpg`, `png`, `gif`                      |
 | tileQuality       | 85      | int     | Quality of output tiles (1-100, for lossy formats)               |
+| noRotate          | false   | boolean | Skip EXIF auto-orientation (orient by default)                   |
 | convertPath       | auto    | string  | Path to ImageMagick `convert` binary                             |
 | vipsPath          | auto    | string  | Path to `vips` binary                                            |
 | executeStrategy   | 'exec'  | string  | PHP execution strategy: `exec`, `proc_open`                      |
